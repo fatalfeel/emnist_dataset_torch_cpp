@@ -113,8 +113,7 @@ EminstDataset::EminstDataset()
         cv::imshow(buf, img_resize);
         cv::waitKey(0);*/
 
-        //cout << img_rotate << endl;
-        //Transform(img_rotate);
+        //Transform(img_rotate); //test
 
         m_class_images.push_back(std::move(img_rotate));
     }
@@ -123,6 +122,8 @@ EminstDataset::EminstDataset()
 
 EminstDataset::~EminstDataset()
 {
+    m_class_labels.clear();
+    m_class_images.clear();
 }
 
 //single channel
