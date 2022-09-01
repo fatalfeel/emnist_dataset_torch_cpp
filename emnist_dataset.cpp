@@ -105,9 +105,12 @@ EminstDataset::EminstDataset()
         cv::flip(src, img_flip, 0); //0=x-axis
         cv::rotate(img_flip, img_rotate, cv::ROTATE_90_CLOCKWISE);
 
-        /*cv::Mat img_resize;
-        cv::resize(img_rotate, img_resize, cv::Size(320, 200));
-        cv::imshow("view", img_resize);
+        /*char    buf[64]     = {0};
+        char    letters[]   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabdefghnqrt";
+        cv::Mat img_resize;
+        cv::resize(img_rotate, img_resize, cv::Size(640, 480));
+        sprintf(buf,"letter: [%c]", letters[m_class_labels[i]]);
+        cv::imshow(buf, img_resize);
         cv::waitKey(0);*/
 
         //cout << img_rotate << endl;
