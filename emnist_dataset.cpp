@@ -90,6 +90,7 @@ EminstDataset::EminstDataset()
         if_image.read(&rawbyte, 1);
 
     uint8_t* imgbuf = new uint8_t[28*28];
+    //for (uint32_t i = 0; i < 100; i++)
     for (uint32_t i = 0; i < size_image; i++)
     {
         if_image.read((char*)imgbuf, 28*28);
@@ -134,13 +135,14 @@ torch::Tensor EminstDataset::Transform(cv::Mat cv_image)
     cv_image.convertTo(cv_image, CV_32F, 1.0f / 255.0f);
     //cout << cv_image << endl;
 
-    tensor_image = torch::from_blob(cv_image.data, { 1, cv_image.rows, cv_image.cols, cv_image.channels() }, torch::kFloat32);
-    tensor_image = tensor_image.permute({0, 3, 1, 2});
+    tensor_image     = torch::from_blob(cv_image.data, { cv_image.rows, cv_image.cols, cv_image.channels() }, torch::kFloat32);
+    tensor_image     = tensor_image.permute({2, 0, 1});
     /*for(uint32_t k=0; k<28; k++)
-        cout << tensor_image[0][0][k] << endl;*/
-    tensor_image   -= 0.5f;
+        cout << tensor_image[0][k] << endl;*/
+
+    tensor_image    -= 0.5f;
     /*for(uint32_t k=0; k<28; k++)
-            cout << tensor_image[0][0][k] << endl;*/
+        cout << tensor_image[0][k] << endl;*/
 
     return tensor_image;
 }
@@ -161,6 +163,9 @@ torch::data::Example<>EminstDataset::get(size_t index)
     tensor_label = torch::tensor({cv_label}, at::kChar);
     tensor_image = Transform(cv_image);
 
+    /*cout << tensor_image.sizes() << endl;
+    cout << tensor_label.sizes() << endl;*/
+
     return {tensor_image, tensor_label};
 }
 
@@ -177,11 +182,11 @@ int main(int argc, char *argv[])
 
     for (auto& batch : *train_dataloader)
     {
-        torch::Tensor data   = batch.data;
-        torch::Tensor labels = batch.target;
+        torch::Tensor image = batch.data;
+        torch::Tensor label = batch.target;
 
-        cout << data << endl;
-        cout << labels << endl;
+        /*cout << image.sizes() << endl;
+        cout << label.sizes() << endl;*/
     }
 
     torch::NoGradGuard guard_release; //release torch memory
